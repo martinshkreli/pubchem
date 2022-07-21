@@ -16,29 +16,34 @@ const requestCompounds = async ({start=1, end=5, delay=1000}) => {
 }
 
 const parseCompounds = compounds => {
-  return compounds.map(({Record}) => {
-    const {Section, RecordNumber, RecordTitle} = Record;
-
-    const getDeepValue = obj => obj?.[0]?.Value?.StringWithMarkup?.[0]?.String;
-    const getSubsectionInfo = (baseObj, propertyName) => baseObj?.find(({TOCHeading}) => TOCHeading == propertyName)?.Information;
-
-    const namesAndIds = Section?.find(({TOCHeading}) => TOCHeading == "Names and Identifiers")?.Section;
-    const computedDescriptors = namesAndIds?.find(({TOCHeading}) => TOCHeading == "Computed Descriptors")?.Section;
-
-    const recordDescription = namesAndIds
-      ?.find(({TOCHeading}) => TOCHeading == "Record Description")?.Information
-      ?.find(({Name}) => Name == "Record Description")?.Value?.StringWithMarkup?.[0]?.String;
-
-    return {
-      'number' : RecordNumber || "",
-      'name' : RecordTitle || "",
-      'description' : recordDescription || "",
-      'iupac' : getDeepValue(getSubsectionInfo(computedDescriptors, "IUPAC Name")) || "",
-      'inchi' : getDeepValue(getSubsectionInfo(computedDescriptors, "InChI")) || "",
-      'inchikey' : getDeepValue(getSubsectionInfo(computedDescriptors, "InChI Key")) || "",
-      'smiles' : getDeepValue(getSubsectionInfo(computedDescriptors, "Canonical SMILES")) || "",
-    };
-  })
+  try {
+    return compounds.map(({Record}) => {
+      const {Section, RecordNumber, RecordTitle} = Record;
+  
+      const getDeepValue = obj => obj?.[0]?.Value?.StringWithMarkup?.[0]?.String;
+      const getSubsectionInfo = (baseObj, propertyName) => baseObj?.find(({TOCHeading}) => TOCHeading == propertyName)?.Information;
+  
+      const namesAndIds = Section?.find(({TOCHeading}) => TOCHeading == "Names and Identifiers")?.Section;
+      const computedDescriptors = namesAndIds?.find(({TOCHeading}) => TOCHeading == "Computed Descriptors")?.Section;
+  
+      const recordDescription = namesAndIds
+        ?.find(({TOCHeading}) => TOCHeading == "Record Description")?.Information
+        ?.find(({Name}) => Name == "Record Description")?.Value?.StringWithMarkup?.[0]?.String;
+  
+      return {
+        'number' : RecordNumber || "",
+        'name' : RecordTitle || "",
+        'description' : recordDescription || "",
+        'iupac' : getDeepValue(getSubsectionInfo(computedDescriptors, "IUPAC Name")) || "",
+        'inchi' : getDeepValue(getSubsectionInfo(computedDescriptors, "InChI")) || "",
+        'inchikey' : getDeepValue(getSubsectionInfo(computedDescriptors, "InChI Key")) || "",
+        'smiles' : getDeepValue(getSubsectionInfo(computedDescriptors, "Canonical SMILES")) || "",
+      };
+    })
+  } catch(e) {
+    console.log(`An error occurred while parsing compound`);
+    console.log(e);
+  }
 }
 
 const main = async () => {
