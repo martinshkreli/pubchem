@@ -1,70 +1,57 @@
 async function init() {
 
   const localcompounds = [];
-
-for (let i = 1; i < 10; i++){
-
-fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/${i}/JSON/`)
-  .then(response => response.json())
-  .then(data => localcompounds.push(data))
-  await sleep(1000);
-}
-return localcompounds;
+const n = 10;
+for (let i = 1; i < n; i++){
+  fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/${i}/JSON/`)
+    .then(response => response.json())
+    .then(data => localcompounds.push(data))
+    await sleep(1000);
+  }
+  return localcompounds;
 }
 
 function sleep(ms) {
-    return new Promise((resolve)=> {
-        setTimeout(resolve, ms);
-    })
+  return new Promise((resolve)=> {
+      setTimeout(resolve, ms);
+  })
 }
 
 async function process() {
   const mastercompounds = await init()
   const newcompounds = []
-  mastercompounds.forEach(x => {
+  mastercompounds.forEach(compound => {
+    const firstSection = compound.Record.Section;
+    const sectionIndex = firstSection.findIndex(({TOCHeading}) => TOCHeading == "Names and Identifiers");
+
+    const secondSection = firstSection[sectionIndex]["Section"];
+
+    const nextSectionIndex = secondSection.findIndex(section => section["TOCHeading"] == "Record Description");
     
-  const sectionIndex = x.Record.Section.findIndex(section => section["TOCHeading"] == "Names and Identifiers");
-  const nextSectionIndex = x.Record.Section[sectionIndex]["Section"].findIndex(section => section["TOCHeading"] == "Record Description");
-  const computedDescriptorsIndex = x.Record.Section[sectionIndex]["Section"].findIndex(section => section["TOCHeading"] == "Computed Descriptors");
-  const iupacIndex = x.Record.Section[sectionIndex]["Section"][computedDescriptorsIndex]["Section"].findIndex(section => section["TOCHeading"] == "IUPAC Name");
-  const inchiIndex = x.Record.Section[sectionIndex]["Section"][computedDescriptorsIndex]["Section"].findIndex(section => section["TOCHeading"] == "InChI");
-  const inchiKeyIndex = x.Record.Section[sectionIndex]["Section"][computedDescriptorsIndex]["Section"].findIndex(section => section["TOCHeading"] == "InChI Key");
-  const smilesIndex = x.Record.Section[sectionIndex]["Section"][computedDescriptorsIndex]["Section"].findIndex(section => section["TOCHeading"] == "Canonical SMILES");
+    const computedDescriptorsIndex = secondSection.findIndex(section => section["TOCHeading"] == "Computed Descriptors");
+    const descriptionSection = secondSection[computedDescriptorsIndex]["Section"];
 
-  newcompounds.push({
-    'number' : x.Record.RecordNumber,
-    'name' : x.Record.RecordTitle,
-    'description' : null,
-    'iupac' : null,
-    'inchi' : null,
-    'inchikey' : null,
-    'smiles' : null
-  });
+    const iupacIndex = descriptionSection.find(section => section["TOCHeading"] == "IUPAC Name");
+    const inchiIndex = descriptionSection.find(section => section["TOCHeading"] == "InChI");
+    const inchiKeyIndex = descriptionSection.find(section => section["TOCHeading"] == "InChI Key");
+    const smilesIndex = descriptionSection.find(section => section["TOCHeading"] == "Canonical SMILES");
 
-  console.log(newcompounds.length);
+    const root = compound.Record.Section[sectionIndex];
+    const getStringWithMarkup = obj => obj?.Information?.[0]?.Value?.StringWithMarkup?.[0]?.String;
+    const getDescriptor = obj => obj?.root?.[computedDescriptorsIndex]?.["Section"];
+    newcompounds.push({
+      'number' : compound.Record.RecordNumber,
+      'name' : compound.Record.RecordTitle,
+      'description' : getStringWithMarkup(root[nextSectionIndex]),
+      'iupac' : getStringWithMarkup(getDescriptor(iupacIndex)),
+      'inchi' : getStringWithMarkup(getDescriptor(inchiIndex)),
+      'inchikey' : getStringWithMarkup(getDescriptor(inchiKeyIndex)),
+      'smiles' : getStringWithMarkup((smilesIndex))
+    });
 
-  if (sectionIndex != -1 && nextSectionIndex != -1) {
-    newcompounds[newcompounds.length - 1]['description'] = (x.Record.Section[sectionIndex].Section[nextSectionIndex].Information[0].Value.StringWithMarkup[0].String)
-  };
-
-  if (computedDescriptorsIndex != -1 && iupacIndex != -1) {
-    newcompounds[newcompounds.length - 1]['iupac'] = (x.Record.Section[sectionIndex].Section[computedDescriptorsIndex]["Section"][iupacIndex].Information[0].Value.StringWithMarkup[0].String)
-  };
-
-  if (computedDescriptorsIndex != -1 && inchiIndex != -1) {
-    newcompounds[newcompounds.length - 1]['inchi'] = (x.Record.Section[sectionIndex].Section[computedDescriptorsIndex]["Section"][inchiIndex].Information[0].Value.StringWithMarkup[0].String)
-  };
-
-  if (computedDescriptorsIndex != -1 && inchiKeyIndex != -1) {
-    newcompounds[newcompounds.length - 1]['inchikey'] = (x.Record.Section[sectionIndex].Section[computedDescriptorsIndex]["Section"][inchiKeyIndex].Information[0].Value.StringWithMarkup[0].String)
-  };
-
-  if (computedDescriptorsIndex != -1 && inchiKeyIndex != -1) {
-    newcompounds[newcompounds.length - 1]['smiles'] = (x.Record.Section[sectionIndex].Section[computedDescriptorsIndex]["Section"][smilesIndex].Information[0].Value.StringWithMarkup[0].String)
-  };
-
-})
-
+    // console.log(newcompounds.length);
+  })
+  
   console.log(newcompounds);
   console.log(newcompounds.length);
 
