@@ -71,7 +71,7 @@ def pullChemData(chemicalName, outputFormat):
 		print(asXML)
 		sleep(1)
 		with open(filename, 'w') as xmlData:
-			xmlData.write(chemData)
+			xmlData.write(str(chemData))
 		print("PubChem search data saved to pubchemResults.xml.")
 		sleep(1)
 		printDataToConsole(filename)
@@ -82,7 +82,7 @@ def pullChemData(chemicalName, outputFormat):
 		print(asJSON)
 		sleep(1)
 		with open(filename, 'w') as jsonData:
-			jsonData.write(chemData)
+			jsonData.write(str(chemData))
 		print(f'PubChem search data saved to {filename}.')
 		sleep(1)
 		printDataToConsole(filename)
@@ -93,7 +93,7 @@ def pullChemData(chemicalName, outputFormat):
 		print(asCSV)
 		sleep(1)
 		with open(filename, 'w') as csvData:
-			csvData.write(chemData)
+			csvData.write(str(chemData))
 		print(f'PubChem search results saved to {filename}.')
 		sleep(1)
 		printDataToConsole(filename)
@@ -115,7 +115,7 @@ def pullChemData(chemicalName, outputFormat):
 		print(asPNG)
 		sleep(1)
 		with open(filename, 'w') as pngData:
-			pngData.write(chemData)
+			pngData.write(str(chemData))
 		print(f'PubChem search data saved to {filename}.')
 		sleep(1)
 		printDataToConsole(filename)
@@ -126,7 +126,7 @@ def pullChemData(chemicalName, outputFormat):
 		print(asSDF)
 		sleep(1)
 		with open(filename, 'w') as sdfData:
-			sdfData.write(chemData)
+			sdfData.write(str(chemData))
 		print(f'PubChem search data saved to {filename}.')
 		sleep(1)
 		printDataToConsole(filename)
