@@ -1,5 +1,8 @@
 # ChemSearch  
 
+![image](https://user-images.githubusercontent.com/35274771/184450492-832cc35a-3790-4cf0-9764-7fc17ac7b971.png)
+###### Just a simple utility to run chemical searches through PubChem on your command line.
+
 A small Python script that allows you to search for chemicals on PubChem and save it in a file format of your choice to local disk.
 
 ### Usage
