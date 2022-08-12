@@ -34,3 +34,6 @@ echo "ChemSearch Dependencies Installation Script"
 sleep 1
 echo "Beginning required operations..."
 check_distro
+echo "Everything finished. You can now run 'python3 pchem.py' to invoke ChemSearch. Enjoy!"
+sleep 2
+exit 0
