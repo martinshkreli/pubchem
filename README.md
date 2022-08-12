@@ -1,6 +1,6 @@
 # ChemSearch  
 
-![image](https://user-images.githubusercontent.com/35274771/184450492-832cc35a-3790-4cf0-9764-7fc17ac7b971.png)
+![image](https://user-images.githubusercontent.com/35274771/184450693-867a0a65-fb13-48eb-97fe-c4fefe997334.png)
 
 ###### Just a simple utility to run chemical searches through PubChem on your command line.
 
