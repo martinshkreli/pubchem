@@ -14,7 +14,7 @@ A small Python script that allows you to search for chemicals on PubChem and sav
 
 First, clone this repo to your local machine: 
 
-`git clone https://github.com/martinshkreli/pubchem`
+`git clone https://github.com/rav3ndust/ChemSearch`
 
 #
 
