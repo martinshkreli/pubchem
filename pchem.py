@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 #from bs4 import BeautifulSoup as soup
+'''Not using beautiful soup right now.
+PubChemPy is probably the best tool to build around on this specific use-case.''' 
 from pubchempy import * 
 import re
 import requests
