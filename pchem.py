@@ -19,8 +19,9 @@ chemSelectionSection = "* = ~ C H E M I C A L     S E L E C T I O N ~ = *"
 formatSelectionSection = "* = ~ F O R M A T       S E L E C T I O N ~ = *"
 # below is the URL. append the above variables to it when values are obtained.
 searchURL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compund/name"
-# This script currently assumes a Debian/Ubuntu GNU/Linux environment.
-# WSL will also work if you are running Windows.
+''' This script currently assumes a Debian/Ubuntu GNU/Linux environment.
+WSL will also work if you are running Windows.
+None of this program has been tested on macOS - YMMV.'''
 running = "This program requires a Debian or Ubuntu GNU/Linux environment - WSL will work for Windows!"
 # an array of output formats that the user will be able to choose from: 
 outputFormats = ["1: .XML - Handy for viewing data as a structure.", #0
